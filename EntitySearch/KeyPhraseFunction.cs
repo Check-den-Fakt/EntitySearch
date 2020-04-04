@@ -19,7 +19,7 @@ namespace Entity
         private static RestSharp.RestClient client;
 
         [FunctionName("ExtractKeyPhrase")]
-        public static async Task<string> Validate([ActivityTrigger] string request,
+        public static async Task<string> ExtractKeyPhrase([ActivityTrigger] Request request,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
@@ -37,11 +37,11 @@ namespace Entity
                 var doc = new Document
                 {
                     id = "1",
-                    language = "de",
-                    text = request 
+                    language = request.language,
+                    text = request.Text
                 };
 
-                var requestObject = new RootObject 
+                var requestObject = new DocumentObject 
                 { 
                     documents = new List<Document>() { doc }
                 };

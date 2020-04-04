@@ -8,7 +8,7 @@ namespace Entity.Model
         public List<string> keyPhrases { get; set; }
     }
 
-    public class RootObject
+    public class DocumentObject
     {
         public List<Document> documents { get; set; }
         public List<object> errors { get; set; }

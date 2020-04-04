@@ -22,7 +22,7 @@ namespace Entity
             collectionName: "func",
             ConnectionStringSetting = "CosmosDbConnection")] IAsyncCollector<document> documents, ILogger log)
         {
-            Model.RootObject requestData = JsonConvert.DeserializeObject<Model.RootObject>(request);
+            Model.DocumentObject requestData = JsonConvert.DeserializeObject<Model.DocumentObject>(request);
             string time = DateTime.UtcNow.ToString();
 
             foreach (var item in requestData.documents[0].keyPhrases)
@@ -39,7 +39,7 @@ namespace Entity
         {
 
             log.LogInformation("C# HTTP trigger function processed a request.");
-            Model.RootObject requestData = JsonConvert.DeserializeObject<Model.RootObject>(request);
+            Model.DocumentObject requestData = JsonConvert.DeserializeObject<Model.DocumentObject>(request);
 
             Uri collectionUri = UriFactory.CreateDocumentCollectionUri(databaseId: "entities", collectionId: "func");
             var options = new FeedOptions { EnableCrossPartitionQuery = true }; // Enable cross partition query
