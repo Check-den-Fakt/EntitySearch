@@ -11,7 +11,7 @@ namespace Entity
         public string text { get; set; }
     }
 
-    public class RootObject
+    public class DocumentObject
     {
         public List<Document> documents { get; set; }
     }

@@ -24,20 +24,20 @@ namespace Entity
             Request requestData = context.GetInput<Request>();
 
             // Get Key Phrase from Azure Cognitive Services
-            var keyPhraseResponse = await context.CallActivityAsync<string>("ExtractKeyPhrase", requestData.Text);
+            Model.KeyPhraseResponse keyPhraseResponse = new Model.KeyPhraseResponse(requestData.language);
+
+            keyPhraseResponse.Text = await context.CallActivityAsync<string>("ExtractKeyPhrase", requestData);
             log.LogInformation("Completed ExtractKeyPhrase");
 
-            //CognitionKeyResponse keyPhraseObject = JsonConvert.DeserializeObject<CognitionKeyResponse>(keyPhraseResponse);
-
             // Add to DB
-            await context.CallActivityAsync<string>("CosmosOutput", keyPhraseResponse);
+            await context.CallActivityAsync<string>("CosmosOutput", keyPhraseResponse.Text);
             log.LogInformation("Completed CosmosOutput");
 
             // Count DB
-            var resultCountDb = await context.CallActivityAsync<string>("CosmosSearch", keyPhraseResponse);
+            var resultCountDb = await context.CallActivityAsync<string>("CosmosSearch", keyPhraseResponse.Text);
             log.LogInformation("Completed CosmosSearch");
 
-            var resultTwitter = await context.CallActivityAsync<string>("GetTwitter", keyPhraseResponse);
+            var resultTwitter = await context.CallActivityAsync<string>("GetTwitter", keyPhraseResponse.Text);
 
             string output = "{\"InternalHitCount\" : " + resultCountDb + ",  \"TwitterHitCount\" : " + resultTwitter + " }";
 
@@ -54,7 +54,7 @@ namespace Entity
             RestSharp.RestRequest restRequest = new RestSharp.RestRequest("/api/SearchTwitter", RestSharp.Method.POST);
 
             restRequest.AddHeader("Content-Type", "application/json");
-            Model.RootObject requestData = JsonConvert.DeserializeObject<Model.RootObject>(request);
+            Model.DocumentObject requestData = JsonConvert.DeserializeObject<Model.DocumentObject>(request);
 
             string query = string.Empty;
             foreach (var item in requestData.documents[0].keyPhrases)
